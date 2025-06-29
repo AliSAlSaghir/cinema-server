@@ -30,7 +30,7 @@ if (!$code || !$discountPercentage) {
 
 $data = [
   'code' => $code,
-  'discount_value' => $discountValue,
+  'discount_percentage' => $discountPercentage,
   'expires_at' => $expiresAt,
   'is_active' => (bool)$isActive
 ];
