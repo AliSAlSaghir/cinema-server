@@ -27,4 +27,19 @@ class Seat extends Model {
       'label' => $this->row_label . $this->seat_number
     ];
   }
+
+  public static function getByAuditorium(int $auditoriumId): array {
+    $db = static::$db;
+    $stmt = $db->prepare("SELECT * FROM seats WHERE auditorium_id = ? ORDER BY row_label ASC, seat_number ASC");
+    $stmt->bind_param("i", $auditoriumId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $seats = [];
+    while ($row = $result->fetch_assoc()) {
+      $seats[] = new self($row);
+    }
+
+    return $seats;
+  }
 }
