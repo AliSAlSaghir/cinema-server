@@ -28,4 +28,23 @@ class Coupon extends Model {
       'is_active' => $this->is_active
     ];
   }
+
+  public static function getValidCoupon(string $code): ?Coupon {
+    $db = static::$db;
+    $stmt = $db->prepare("SELECT * FROM coupons WHERE code = ? AND is_active = 1 AND (expires_at IS NULL OR expires_at > NOW()) LIMIT 1");
+    $stmt->bind_param("s", $code);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+      return new Coupon($row);
+    }
+
+    return null;
+  }
+
+
+  public function calculateDiscount(float $total): float {
+    return round(($this->discount_percentage / 100.0) * $total, 2);
+  }
 }
