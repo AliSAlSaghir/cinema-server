@@ -22,18 +22,15 @@ $snacks        = $input['snacks'] ?? [];
 $paymentMethod = $input['payment_method'] ?? 'on_site';
 $couponCode    = $input['coupon_code'] ?? null;
 
-// Optionally require authentication
-// requireAuth($userId);
+
 
 if (!$userId || !$showtimeId || empty($seatIds)) {
   respond(400, ['error' => 'user_id, showtime_id, and seat_ids are required']);
 }
 
-// 🎟️ Ticket price (can be made dynamic later)
 $ticketPrice = 10.0;
 $total = count($seatIds) * $ticketPrice;
 
-// 🍿 Add snack prices
 foreach ($snacks as $item) {
   $snack = Snack::find($item['snack_id']);
   if ($snack) {
@@ -41,7 +38,6 @@ foreach ($snacks as $item) {
   }
 }
 
-// 🎟️ Apply coupon if available
 $discount = 0;
 if ($couponCode) {
   $coupon = Coupon::getValidCoupon($couponCode);
@@ -52,14 +48,12 @@ if ($couponCode) {
   $total -= $discount;
 }
 
-// 💺 Validate seat availability before booking
 foreach ($seatIds as $seatId) {
   if (BookingSeat::isSeatBooked($seatId, $showtimeId)) {
     respond(409, ['error' => "Seat ID $seatId is already booked for this showtime"]);
   }
 }
 
-// 📝 Create booking
 $data = [
   'user_id'        => $userId,
   'showtime_id'    => $showtimeId,
@@ -87,7 +81,6 @@ foreach ($seatIds as $seatId) {
 }
 
 
-// 🍫 Save snacks
 foreach ($snacks as $item) {
   BookingSnack::create([
     'booking_id' => $bookingId,
@@ -96,7 +89,6 @@ foreach ($snacks as $item) {
   ]);
 }
 
-// ✅ Success response
 respond(201, [
   'message'     => 'Booking created successfully',
   'booking_id'  => $bookingId,
