@@ -15,7 +15,7 @@ $name = $_POST['name'] ?? null;
 $price = $_POST['price'] ?? null;
 $isAvailable = isset($_POST['is_available']) ? (bool)$_POST['is_available'] : true;
 
-if (!$name || !$price || !is_numeric($price)) {
+if (!$name || !$price || !is_numeric ($price)) {
   respond(400, ['error' => 'Name and numeric price are required']);
 }
 
