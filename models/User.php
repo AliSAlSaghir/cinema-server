@@ -137,21 +137,8 @@ class User extends Model {
   }
 
   public function toArray(): array {
-    return [
-      'id'                         => $this->id,
-      'name'                       => $this->name,
-      'email'                      => $this->email,
-      'phone_number'               => $this->phone_number,
-      'date_of_birth'              => $this->date_of_birth,
-      'national_id_image'     => $this->national_id_image,
-      'profile_picture'       => $this->profile_picture,
-      'preferred_day'              => $this->preferred_day,
-      'preferred_time'             => $this->preferred_time,
-      'preferred_payment_method'   => $this->preferred_payment_method,
-      'communication_preference'   => $this->communication_preference,
-      'is_admin'                   => $this->is_admin,
-      'membership'                 => $this->membership,
-      'created_at'                 => $this->created_at
-    ];
+    $data = get_object_vars($this);
+    unset($data['password']);
+    return $data;
   }
 }
